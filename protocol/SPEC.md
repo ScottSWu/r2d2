@@ -11,7 +11,7 @@
 | Section | Bytes | Description | Example |
 |:---|:---:|:---|:---|
 | Start | 3 | Start of packet bytes | 0xa2b2c2 |
-| Checksum | 2 | CRC-16 Checksum (CCITT) of length + data, or 0x0000 if no checksum | 0x1234 or 0x0000 |
+| Checksum | 2 | CRC-16 Checksum (CCITT) of data, or 0x0000 if no checksum | 0x1234 or 0x0000 |
 | Type | 4 | Type of data, exactly 4 bytes | "PING" |
 | Length | 4 | Length of data (big endian) | 0x0004 |
 | Data | ? | Payload data | ? |

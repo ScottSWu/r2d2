@@ -5,13 +5,12 @@
 #include "../reference/R2Protocol.h"
 #include "../reference/R2Protocol.hpp"
 
-void test_golden() {
+void test_encode_simple() {
   char text[] = "Hello world!";
-  uint32_t len = strlen(text);
   uint8_t* data = reinterpret_cast<uint8_t*>(text);
-  uint8_t* buffer = new uint8_t[len + 16];
+  uint8_t buffer[12 + 16];
 
-  R2Protocol::encode("TEST", data, len, buffer, len + 16, true);
+  R2Protocol::encode("TEST", data, 12, buffer, 12 + 16, true);
   uint8_t golden[] = {
     0xa2, 0xb2, 0xc2,
     189, 34,
@@ -20,11 +19,32 @@ void test_golden() {
     'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!',
     0xd2, 0xe2, 0xf2
   };
-  for (uint32_t i = 0; i < len + 16; i++) {
+  for (uint32_t i = 0; i < 12 + 16; i++) {
     assert(buffer[i] == golden[i]);
   }
+}
 
-  delete buffer;
+void test_decode_simple() {
+  uint8_t buffer[] = {
+    0xa2, 0xb2, 0xc2,
+    189, 34,
+    'T', 'E', 'S', 'T',
+    0, 0, 0, 12,
+    'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', '!',
+    0xd2, 0xe2, 0xf2
+  };
+
+  uint8_t data[12];
+  uint32_t data_len;
+  uint16_t checksum;
+  char type[5];
+
+  R2Protocol::decode(buffer, 12 + 16, type, data, &data_len, &checksum);
+
+  assert(strncmp(type, "TEST", 4) == 0);
+  assert(checksum == ((189 << 8) | 34));
+  assert(data_len == 12);
+  assert(strncmp(reinterpret_cast<char*>(data), "Hello world!", 12) == 0);
 }
 
 void test_random() {
@@ -45,11 +65,8 @@ void test_random() {
 }
 
 int main(int argc, char** argv) {
-  test_golden();
-  //test_short();
-  //test_random();
-  //test_long();
-  //test_match();
+  test_encode_simple();
+  test_decode_simple();
   printf("%s: All tests pass!\n", argv[0]);
   return 0;
 }

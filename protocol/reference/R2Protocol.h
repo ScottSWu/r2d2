@@ -134,8 +134,8 @@ inline int32_t r2p_encode(const char type[5], uint8_t* data, uint32_t data_len, 
  *
  * @param   buffer  Unsigned 8 bit array of encoded data
  * @param   buffer_len  Length of encoded data array
- * @param   checksum  Output 16 bit checksum
  * @param   type  Output 4 char type of data
+ * @param   checksum  Output 16 bit checksum
  * @param   data  Output unsigned 8 bit array of data
  * @param   data_len  Output length of output data array
  * @return  Number of bytes read, -1 if failed to parse
@@ -178,8 +178,8 @@ inline int32_t r2p_decode_nocs(uint8_t* buffer, uint32_t buffer_len, uint16_t* c
  *
  * @param   buffer  Unsigned 8 bit array of encoded data
  * @param   buffer_len  Length of encoded data array
- * @param   checksum  Output 16 bit checksum
  * @param   type  Output 4 char type of data
+ * @param   checksum  Output 16 bit checksum
  * @param   data  Output unsigned 8 bit array of data
  * @param   data_len  Output length of output data array
  * @return  Number of bytes read, -1 if failed to parse, -2 if failed checksum

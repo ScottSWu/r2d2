@@ -32,6 +32,20 @@ class TestEcho(unittest.TestCase):
     output = self.conn.read(self.conn.in_waiting)
     self.assertEqual(output, buffer)
 
+  def test_speed(self):
+    total_buffer = b""
+    for i in range(100):
+      start = time.perf_counter()
+      buffer = R2Protocol.encode(bytes(str(i), "utf8"), b"Hello world!")
+      total_buffer += buffer
+      self.conn.write(buffer)
+      delay = 1.0 / 100.0 - (time.perf_counter() - start)
+      if delay > 0:
+        time.sleep(delay)
+
+    output = self.conn.read(self.conn.in_waiting)
+    self.assertEqual(output, total_buffer)
+
 if __name__ == "__main__":
   DEVICE_PATH = sys.argv[1]
   sys.argv = sys.argv[:1]

@@ -1,4 +1,5 @@
-#include "R2ProtocolFSM.h"
+#include "R2Protocol.h"
+
 uint8_t buffer[256];
 r2pf_t fsm;
 
@@ -7,27 +8,25 @@ void setup() {
   fsm = r2pf_init(buffer, 256);
 }
 
+void send(char type[5], const uint8_t* data, uint32_t data_len) {
+  uint32_t written = r2p_encode(type, data, data_len, buffer, 256);
+  Serial.write(buffer, written);
+}
+
 void loop() {
   while (Serial.available() > 0) {
     uint8_t b = Serial.read();
     r2pf_read(&fsm, b);
     if (fsm.done) {
-      Serial.print(fsm.checksum);
-      Serial.write('\n');
-
-      Serial.write(fsm.type[0]);
-      Serial.write(fsm.type[1]);
-      Serial.write(fsm.type[2]);
-      Serial.write(fsm.type[3]);
-      Serial.write('\n');
-
-      Serial.print(fsm.data_len);
-      Serial.write('\n');
-      
-      for (uint32_t len = 0; len < fsm.data_len; len++) {
-        Serial.write(fsm.data[len]);
+      if (strncmp("WHO", fsm.type, 3) == 0) {
+        send("WHO\0", reinterpret_cast<const uint8_t*>("ECHO"), 4);
       }
-      Serial.write('\n');
+      else if (strncmp("PING", fsm.type, 4) == 0) {
+        send("PONG", 0, 0);
+      }
+      else {
+        send(fsm.type, fsm.data, fsm.data_len);
+      }
       fsm.done = 0;
     }
   }

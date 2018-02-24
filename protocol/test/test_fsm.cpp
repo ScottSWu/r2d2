@@ -3,7 +3,6 @@
 #include <stdio.h>
 
 #include "../reference/R2Protocol.h"
-#include "../reference/R2ProtocolFSM.h"
 
 void test_simple() {
   uint8_t encoded[] = {

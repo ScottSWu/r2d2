@@ -46,7 +46,7 @@ namespace R2Protocol {
    * @param   len   Length of the data array
    * @return  The CRC as an unsigned 16 bit integer
    */
-  inline uint16_t crc16(uint8_t* data, uint32_t len) {
+  inline uint16_t crc16(const uint8_t* data, uint32_t len) {
     uint16_t crc = 0xffff;
     while (len-- > 0) {
       crc = (crc << 8) ^ r2p_crc16_table[((crc >> 8) ^ *data++) & 0xff];
@@ -70,7 +70,7 @@ namespace R2Protocol {
    * @param   checksum  Whether or not to check the checksum (optional, default false)
    * @return  Number of bytes written, -1 if failed
    */
-  inline int32_t encode(const char type[5], uint8_t* data, uint32_t data_len, uint8_t* buffer, uint32_t buffer_len, bool checksum = false) {
+  inline int32_t encode(const char type[5], const uint8_t* data, uint32_t data_len, uint8_t* buffer, uint32_t buffer_len, bool checksum = false) {
     // Make sure the buffer is large enough
     if (buffer_len < data_len + R2P_HEADER_SIZE) {
       return -1;
@@ -123,7 +123,7 @@ namespace R2Protocol {
    * @param   checksum  Output 16 bit checksum (optional, default null)
    * @return  Number of bytes read, -1 if failed to parse
    */
-  inline int32_t decode(uint8_t* buffer, uint32_t buffer_len, char type[5], uint8_t* data, uint32_t* data_len, uint16_t* checksum = nullptr) {
+  inline int32_t decode(const uint8_t* buffer, uint32_t buffer_len, char type[5], uint8_t* data, uint32_t* data_len, uint16_t* checksum = nullptr) {
     // Search for the starting byte
     uint32_t index = 0;
     while (index < buffer_len - 2 && !(buffer[index] == 0xa2 &&
